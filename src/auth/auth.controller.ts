@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { AccessAuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
 
 @Controller('api/v1/auth')
@@ -8,9 +17,14 @@ export class AuthController {
   getAllUser() {
     return this._authService.findAllUser();
   }
+
+  @UseGuards(AccessAuthGuard)
   @Get(':id')
-  getUser(@Param('id') userId: string) {
+  getUser(@Param('id') userId: string, @Request() req): any {
+    console.log(req.user);
+
     return this._authService.findUser(userId);
+    // return req.user;
   }
 
   @Post('signin')
